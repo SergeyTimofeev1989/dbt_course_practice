@@ -42,6 +42,74 @@ sources:
             description: Дата бронирования
           - name: total_amount
             description: Общая сумма бронирования
+      - name: boarding_passes
+        description: Таблица с информацией о посадочных талонах для пассажиров
+        columns:
+          - name: ticket_no
+            description: Уникальный номер билета пассажира
+          - name: flight_id
+            description: Идентификатор рейса, на который оформлен билет
+          - name: boarding_no
+            description: Номер посадочного талона, который используется для входа в самолет
+          - name: seat_no
+            description: Номер места пассажира в самолете
+      - name: flights
+        description: Таблица, содержащая информацию о рейсах, включая запланированные и фактические данные о времени отправления и прибытия, а также информацию о статусе рейса и используемом самолете
+        columns:
+          - name: flight_id
+            description: Уникальный идентификатор рейса
+          - name: flight_no
+            description: Номер рейса, присвоенный авиакомпанией
+          - name: scheduled_departure
+            description: Запланированное время отправления рейса
+          - name: scheduled_arrival
+            description: Запланированное время прибытия рейса
+          - name: departure_airport
+            description: Аэропорт отправления рейса
+          - name: arrival_airport
+            description: Аэропорт прибытия рейса
+          - name: status
+            description: Статус рейса (например, 'запланирован', 'в пути', 'завершен', 'отменен')
+          - name: aircraft_code
+            description: Код самолета, используемого для выполнения рейса
+          - name: actual_departure
+            description: Фактическое время отправления рейса
+          - name: actual_arrival
+            description: Фактическое время прибытия рейса
+        freshness:
+          error_after:
+            count: 2
+            period: day
+          warn_after:
+            count: 1
+            period: day
+          filter: actual_departure is not null
+        loaded_at_field: actual_departure::timestamp
+
+      - name: ticket_flights
+        description: Таблица с информацией о билетах и связанных с ними рейсах включая класс обслуживания и стоимость
+        columns:
+          - name: ticket_no
+            description: Уникальный номер билета
+          - name: flight_id
+            description: Идентификатор рейса, связанного с билетом
+          - name: fare_conditions
+            description: Класс обслуживания или тарифные условия билета
+          - name: amount
+            description: Стоимость билета или сумма оплаты
+      - name: tickets
+        description: Таблица с информацией о билетах пассажиров включая бронирование и контактные данные
+        columns:
+          - name: ticket_no
+            description: Уникальный номер билета
+          - name: book_ref
+            description: Код бронирования, связанный с билетом
+          - name: passenger_id
+            description: Уникальный идентификатор пассажира
+          - name: passenger_name
+            description: Имя пассажира
+          - name: contact_data
+            description: Контактная информация пассажира
         freshness:
           error_after:
             count: 1
