@@ -11,6 +11,15 @@ sources:
             description: Название модели самолёта
           - name: range
             description: Неизвестное поле
+      - name: aircrafts_data
+        description: Данные об авиалайнерах, включая код самолёта, модель и дальность полёта
+        columns:
+          - name: aircrafts_code
+            description: Уникальный код самолёта, идентификатор модели
+          - name: model
+            description: Название или модель самолёта
+          - name: range
+            description: Максимальная дальность полёта в километрах
       - name: airports
         description: Аэропорты
         columns:
@@ -24,6 +33,19 @@ sources:
             description: Координаты аэропорта
           - name: timezone
             description: Временная зона аэропорта
+      - name: airports_data
+        description: Информация об аэропортах, включая код, название, город, координаты и часовой пояс
+        columns:
+          - name: airport_code
+            description: Уникальный код аэропорта (IATA или ICAO)
+          - name: airport_name
+            description: Полное название аэропорта
+          - name: city
+            description: Город, в котором расположен аэропорт
+          - name: coordinates
+            description: Географические координаты аэропорта (широта и долгота)
+          - name: timezone
+            description: Часовой пояс аэропорта
       - name: seats
         description: Места в самолётах
         columns:
@@ -33,7 +55,7 @@ sources:
             description: Номер посадочного места
           - name: fare_conditions
             description: Условия полета
-      - name: bookings
+      - name: boarding_passes
         description: Бронирование
         columns:
           - name: book_ref
@@ -42,7 +64,7 @@ sources:
             description: Дата бронирования
           - name: total_amount
             description: Общая сумма бронирования
-      - name: boarding_passes
+      - name: bookings
         description: Таблица с информацией о посадочных талонах для пассажиров
         columns:
           - name: ticket_no
@@ -85,7 +107,71 @@ sources:
             period: day
           filter: actual_departure is not null
         loaded_at_field: actual_departure::timestamp
-
+      - name: flights_v
+        description: Таблица рейсов
+        columns:
+          - name: flight_id
+            description: Идентификатор рейса
+          - name: flight_no
+            description: Номер рейса
+          - name: scheduled_departure
+            description: Запланированное время вылета
+          - name: scheduled_departure_local
+            description: Запланированное локальное время вылета
+          - name: scheduled_arrival
+            description: Запланированное время прибытия
+          - name: scheduled_arrival_local
+            description: Запланированное локальное время прибытия
+          - name: scheduled_duration
+            description: Запланированная длительность рейса
+          - name: departure_airport
+            description: Код аэропорта вылета
+          - name: departure_airport_name
+            description: Название аэропорта вылета
+          - name: departure_city
+            description: Город вылета
+          - name: arrival_airport
+            description: Код аэропорта прибытия
+          - name: arrival_airport_name
+            description: Название аэропорта прибытия
+          - name: arrival_city
+            description: Город прибытия
+          - name: status
+            description: Статус рейса
+          - name: aircraft_code
+            description: Код самолёта
+          - name: actual_departure
+            description: Фактическое время вылета
+          - name: actual_departure_local
+            description: Фактическое локальное время вылета
+          - name: actual_arrival
+            description: Фактическое время прибытия
+          - name: actual_arrival_local
+            description: Фактическое локальное время прибытия
+          - name: actual_duration
+            description: Фактическая длительность рейса
+      - name: routes
+        columns:
+          - name: flight_no
+            description: Номер рейса
+          - name: departure_airport
+            description: Код аэропорта отправления
+          - name: departure_airport_name
+            description: Название аэропорта отправления
+          - name: departure_city
+            description: Город отправления
+          - name: arrival_airport
+            description: Код аэропорта прибытия
+          - name: arrival_airport_name
+            description: Название аэропорта прибытия
+          - name: arrival_city
+            description: Город прибытия
+          - name: aircraft_code
+            description: Код самолёта
+          - name: duration
+            description: Длительность рейса
+          - name: days_of_week
+            description: Дни недели рейса
       - name: ticket_flights
         description: Таблица с информацией о билетах и связанных с ними рейсах включая класс обслуживания и стоимость
         columns:
