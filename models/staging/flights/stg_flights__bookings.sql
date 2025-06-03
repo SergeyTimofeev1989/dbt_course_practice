@@ -1,6 +1,7 @@
 {{
   config(
-    materialized = 'table'
+    materialized = 'incremental',
+    incremental_strategy = 'append'
     )
 }}
 select
@@ -10,4 +11,7 @@ select
 from
     {{ source('demo_src', 'bookings') }}
 
-    
+{% if is_incremental() %}
+where
+    book_ref > (select MAX(book_ref) from  {{ this }})
+{% endif %}
