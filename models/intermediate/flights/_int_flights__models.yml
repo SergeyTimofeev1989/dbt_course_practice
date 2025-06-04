@@ -35,3 +35,25 @@ models: # Указываем свойство модели
         quote: true # Нужно ли при генерации SQL запроса обрамлять название колонки ковычками(мне кажется лучше всегда true)
         # tags: # Метки которыми мы помечаем модели, группы моделей для того, чтобы с одной группой выполнять какую то общую операцию
         # granularity:
+  - name: fct_ticket_flights
+    description: Таблица с информацией о билетах и связанных с ними рейсах включая класс обслуживания и стоимость
+    docs:
+      show: true
+      node_color: green
+    meta:
+      owner: "timofeevsergey@gmail.com"
+    columns:
+      - name: ticket_no
+        data_type: bpchar(13)
+        constraints:
+          - type: check
+            expression: ticket_no not NULL
+      - name: flight_id
+        data_type: int(4)
+        constraints:
+          - type: check
+            expression: flight_id > 0
+      - name: fare_conditions
+        data_type: varchar(10)
+      - name: amount
+        data_type: numeric(10,2)
