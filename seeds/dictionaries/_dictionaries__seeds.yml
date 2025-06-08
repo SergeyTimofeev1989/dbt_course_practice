@@ -9,13 +9,23 @@ seeds:
       column_types:
         city: varchar(50)
         region: varchar(50)
+        updated_at: timestamp
       delimiter: "," # Явное задание разделителя между колонками
     columns:
       - name: city
         tests:
           - not_null
           - unique
-# dbt seed
-# При запуске dbt run сиды не обновляются.
-# Обновление моделей, зависимых от seed происходит командой dbt run --select some_seed+ при этом сам сид не обновится
-# Если структура сида меняется, то при обычном обновлении мы получим ошибку. Нужно обновлять с флагом full-refresh
+  # dbt seed
+  # При запуске dbt run сиды не обновляются.
+  # Обновление моделей, зависимых от seed происходит командой dbt run --select some_seed+ при этом сам сид не обновится
+  # Если структура сида меняется, то при обычном обновлении мы получим ошибку. Нужно обновлять с флагом full-refresh
+  - name: id_passengers
+    description: Id пассажиров, которые являются сотрудниками авакомпании
+    docs:
+      show: true
+      node_color: purple
+    config:
+      quote_columns: true
+      column_types:
+        id: varchar(16)

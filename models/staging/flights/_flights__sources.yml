@@ -3,6 +3,7 @@ sources:
     description: Данные из БД авиаперелетов (название источника совпадает с названеим схемы)
     database: dwh_flight # Если не указать базу данных, то берется БД, которая указана по умолчанию в profiles.yml
     schema: demo_src
+    tags: ["staging"]
     tables:
       - name: aircrafts
         description: Модели самолётов
