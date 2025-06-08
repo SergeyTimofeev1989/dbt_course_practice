@@ -1,12 +1,21 @@
 seeds:
   - name: city_region
     description: Сопоставление регионов и городов
+    docs:
+      show: true # Нужно ли отображать сид в документации
+      node_color: red # Цвет сида в документации
     config:
+      quote_columns: true # Нужно ли обрамлять в кавычки значения в колонках
       column_types:
         city: varchar(50)
         region: varchar(50)
+      delimiter: "," # Явное задание разделителя между колонками
     columns:
       - name: city
         tests:
           - not_null
           - unique
+# dbt seed
+# При запуске dbt run сиды не обновляются.
+# Обновление моделей, зависимых от seed происходит командой dbt run --select some_seed+ при этом сам сид не обновится
+# Если структура сида меняется, то при обычном обновлении мы получим ошибку. Нужно обновлять с флагом full-refresh

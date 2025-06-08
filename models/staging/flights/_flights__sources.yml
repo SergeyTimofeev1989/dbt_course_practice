@@ -1,6 +1,8 @@
 sources:
   - name: demo_src
-    description: Данные из БД авиаперелетов
+    description: Данные из БД авиаперелетов (название источника совпадает с названеим схемы)
+    database: dwh_flight # Если не указать базу данных, то берется БД, которая указана по умолчанию в profiles.yml
+    schema: demo_src
     tables:
       - name: aircrafts
         description: Модели самолётов
@@ -11,6 +13,7 @@ sources:
             description: Название модели самолёта
           - name: range
             description: Неизвестное поле
+
       - name: aircrafts_data
         description: Данные об авиалайнерах, включая код самолёта, модель и дальность полёта
         columns:
@@ -20,6 +23,7 @@ sources:
             description: Название или модель самолёта
           - name: range
             description: Максимальная дальность полёта в километрах
+
       - name: airports
         description: Аэропорты
         columns:
@@ -33,6 +37,7 @@ sources:
             description: Координаты аэропорта
           - name: timezone
             description: Временная зона аэропорта
+
       - name: airports_data
         description: Информация об аэропортах, включая код, название, город, координаты и часовой пояс
         columns:
@@ -46,6 +51,7 @@ sources:
             description: Географические координаты аэропорта (широта и долгота)
           - name: timezone
             description: Часовой пояс аэропорта
+
       - name: seats
         description: Места в самолётах
         columns:
@@ -55,6 +61,7 @@ sources:
             description: Номер посадочного места
           - name: fare_conditions
             description: Условия полета
+
       - name: boarding_passes
         description: Бронирование
         columns:
@@ -64,17 +71,23 @@ sources:
             description: Дата бронирования
           - name: total_amount
             description: Общая сумма бронирования
+
       - name: bookings
         description: Таблица с информацией о посадочных талонах для пассажиров
         columns:
-          - name: ticket_no
-            description: Уникальный номер билета пассажира
-          - name: flight_id
-            description: Идентификатор рейса, на который оформлен билет
-          - name: boarding_no
-            description: Номер посадочного талона, который используется для входа в самолет
-          - name: seat_no
-            description: Номер места пассажира в самолете
+          - name: book_ref
+          - name: book_date
+          - name: total_amount
+        freshness: # Можно ставить как на таблицы, так и на весь источник(если поле одинаковое для всех таблиц). Указываем, что dbt должен проверить и найти самую свежую запись в таблице и сранвить насколько она свежая. Настройки для отдельной таблицы в приоритете.
+          error_after:
+            count: 10000
+            period: day
+          warn_after:
+            count: 600000
+            period: hour
+          filter: current_timestamp::date - book_date::date < 30000 # (Не обязателен)Если мы хотим брать строки не из всей таблицы, а предварительно отфильтровать её, чтобы сократить время выполнения запроса
+        loaded_at_field: book_date::timestamp # Указываем то поле, по которому мы определяем возраст каждой строчки в таблице
+
       - name: flights
         description: Таблица, содержащая информацию о рейсах, включая запланированные и фактические данные о времени отправления и прибытия, а также информацию о статусе рейса и используемом самолете
         columns:
@@ -100,13 +113,14 @@ sources:
             description: Фактическое время прибытия рейса
         freshness:
           error_after:
-            count: 2
+            count: 2000000
             period: day
           warn_after:
-            count: 1
+            count: 10000000
             period: day
           filter: actual_departure is not null
         loaded_at_field: actual_departure::timestamp
+
       - name: flights_v
         description: Таблица рейсов
         columns:
@@ -150,6 +164,7 @@ sources:
             description: Фактическое локальное время прибытия
           - name: actual_duration
             description: Фактическая длительность рейса
+
       - name: routes
         columns:
           - name: flight_no
@@ -172,6 +187,7 @@ sources:
             description: Длительность рейса
           - name: days_of_week
             description: Дни недели рейса
+
       - name: ticket_flights
         description: Таблица с информацией о билетах и связанных с ними рейсах включая класс обслуживания и стоимость
         columns:
@@ -183,6 +199,7 @@ sources:
             description: Класс обслуживания или тарифные условия билета
           - name: amount
             description: Стоимость билета или сумма оплаты
+
       - name: tickets
         description: Таблица с информацией о билетах пассажиров включая бронирование и контактные данные
         columns:
@@ -196,12 +213,3 @@ sources:
             description: Имя пассажира
           - name: contact_data
             description: Контактная информация пассажира
-        freshness:
-          error_after:
-            count: 1
-            period: day
-          warn_after:
-            count: 6
-            period: hour
-          filter: current_timestamp::date - book_date::date < 3
-        loaded_at_field: book_date::timestamp
