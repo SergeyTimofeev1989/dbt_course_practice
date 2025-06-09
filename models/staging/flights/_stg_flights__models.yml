@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_flights__seats
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - seat_no
+            - aircraft_code
+    columns:
+      - name: seat_no
+        data_tests:
+          - not_null
+          - seat_no_pattern:
+              config:
+                severity: warn
+      - name: aircraft_code
+        data_tests:
+          - not_null
+          - relationships:
+              field: aircraft_code
+              to: ref('stg_flights__aircrafts')
+      - name: fare_conditions
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["Business", "Comfort", "Economy"]
+# Рекомендуется ставить проверку на первичный ключ каждой модели, что они не пусты и уникальны
