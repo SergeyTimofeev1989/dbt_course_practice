@@ -30,6 +30,8 @@ sources:
         columns:
           - name: airports_code
             description: Код аэропорта
+            tests:
+              - dbt_utils.not_empty_string # Проверка, что не содержится пустая строка
           - name: airport_name
             description: Название аэропорта
           - name: city

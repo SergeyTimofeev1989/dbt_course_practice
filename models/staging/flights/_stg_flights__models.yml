@@ -10,19 +10,19 @@ models:
     columns:
       - name: seat_no
         data_tests:
-          - not_null
-          - seat_no_pattern:
-              config:
+          - not_null # проверка что каждое поле не пустое
+          - seat_no_pattern: # проверка что значение поле соответствует паттерну
+              config: # дополнительно делаем предупреждение, а не ошибку, если значение в поле не соответствует паттерну
                 severity: warn
       - name: aircraft_code
         data_tests:
           - not_null
-          - relationships:
-              field: aircraft_code
-              to: ref('stg_flights__aircrafts')
+          - relationships: # проверка, что stg_flights__seats aircraft_code принимает только такие значения, которые присутствуют в stg_flights__aircrafts
+              field: aircraft_code # Указываем на какое поле ссылаемся
+              to: ref('stg_flights__aircrafts') # Указываем на какую модель ссылаемся
       - name: fare_conditions
         data_tests:
           - not_null
-          - accepted_values:
+          - accepted_values: # проверяет, что в этой колонке должны быть только значения из следующего списка
               values: ["Business", "Comfort", "Economy"]
 # Рекомендуется ставить проверку на первичный ключ каждой модели, что они не пусты и уникальны
